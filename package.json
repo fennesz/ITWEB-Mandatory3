@@ -1,0 +1,32 @@
+{
+  "name": "web",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "deploy": "npm install && npm start",
+    "copyfiles": "cp -r ./app_server/views ./build/app_server/ && cp -r ./bin ./build/ && cp -r ./public ./build/",
+    "start": "tsc && node ./bin/www",
+    "buildAndRun": "tsc --outDir ./build && npm run copyfiles && cd build && node ./bin/www",
+    "watch": "nodemon -e ts"
+  },
+  "engines": {
+    "node": "^6.11.2",
+    "npm": "^3.10.10"
+  },
+  "dependencies": {
+    "@types/express": "^4.0.37",
+    "@types/mongodb": "^2.2.11",
+    "body-parser": "~1.17.1",
+    "cookie-parser": "~1.4.3",
+    "debug": "~2.6.3",
+    "express": "~4.15.2",
+    "jade": "~1.11.0",
+    "mongodb": "^2.2.31",
+    "morgan": "~1.8.1",
+    "serve-favicon": "~2.4.2",
+    "typescript": "^2.5.2"
+  },
+  "devDependencies": {
+    "nodemon": "^1.11.0"
+  }
+}
