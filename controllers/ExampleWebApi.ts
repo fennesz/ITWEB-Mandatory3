@@ -29,10 +29,10 @@ export class ExampleController {
     public Post(req, res): void {
         this.SetHeaders(res);
         let id = this.exampleData[this.exampleData.length - 1].id + 1;
-        this.exampleData.push({ id: id, data: "Example" });
-        res.location('/' + id);
+        let index = this.exampleData.push({ id: id, data: "Example" });
+        res.location(req.get('host') + req.baseUrl + '/' + id);
         res.status(200);
-        res.send("");
+        res.send(JSON.stringify(this.exampleData[index]));
     }
 
     public Put(req, res): void {
@@ -54,8 +54,8 @@ export class ExampleController {
         if (foundData) {
             let data = req.body.data;
             foundData.data = data;
-            res.status(204);
-            res.send("");
+            res.status(200);
+            res.send(JSON.stringify(foundData));
         }
         else {
             res.status(404);
@@ -76,8 +76,8 @@ export class ExampleController {
         if (foundData) {
             let data = req.body.data;
             foundData.data = data != undefined ? data : foundData.data;
-            res.status(204);
-            res.send("");
+            res.status(200);
+            res.send(JSON.stringify(foundData));
         }
         else {
             res.status(404);
@@ -96,7 +96,7 @@ export class ExampleController {
         });
         if (foundData) {
             this.exampleData.splice(i, 1);
-            res.status(204);
+            res.status(200);
             res.send("");
         }
         else {
