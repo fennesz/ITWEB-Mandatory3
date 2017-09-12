@@ -106,6 +106,7 @@ export class ExampleController extends APIControllerBase {
 let Controller = new ExampleController();
 let ExampleControllerRoutes = router;
 
+// /example/
 ExampleControllerRoutes.get('/:id', (req, res) => {
     Controller.Get(req, res);
 });
