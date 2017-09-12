@@ -1,13 +1,9 @@
 import * as fs from 'fs';
 
 export interface ConfigSettings {
-    dataBaseConnectionString: string;
-    workoutProgramsCollection: string;
 }
 
 const defaultConf: ConfigSettings = {
-    dataBaseConnectionString: "mongodb://localhost:27017",
-    workoutProgramsCollection: "WorkoutPrograms"
 };
 
 let curConf: ConfigSettings = null;
@@ -35,8 +31,6 @@ export function LoadConfig(): Promise<ConfigSettings> {
                         else {
                             console.log("File doesn't exist, creating default");
                             curConf = defaultConf;
-                            let connectionString = process.env.CONNECTION_STRING != undefined ? process.env.CONNECTION_STRING : curConf.dataBaseConnectionString;
-                            curConf.dataBaseConnectionString = connectionString;
                             resolve(CurrentConfig());
                         }
                     });
