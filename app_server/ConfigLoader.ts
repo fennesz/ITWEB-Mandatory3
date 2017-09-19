@@ -30,6 +30,8 @@ export function LoadConfig(): Promise<ConfigSettings> {
                         else {
                             console.log("File doesn't exist, creating default");
                             curConf = defaultConf;
+                            let connectionString = process.env.CONNECTION_STRING != undefined ? process.env.CONNECTION_STRING : curConf.DBConnectionString;
+                            curConf.DBConnectionString = connectionString;
                             return resolve(CurrentConfig());
                         }
                     });
