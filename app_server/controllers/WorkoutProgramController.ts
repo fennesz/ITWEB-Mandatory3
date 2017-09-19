@@ -1,69 +1,62 @@
 import { APIControllerBase } from './APIControllerBase';
-import { IMongoRepository } from '../IMongoRepository';
 import { WorkoutProgram } from '../models/WorkoutProgram';
 import { Exercise } from '../models/Exercise';
-import { GetWorkoutProgramRepo } from '../MongoRepositoryFactory';
+import { MongoClient, Db, Collection, Cursor, ObjectID } from 'mongodb';
+import { CurrentConfig } from '../ConfigLoader';
+
 var express = require('express');
 var router = express.Router();
 
 export class WorkoutController extends APIControllerBase {
-    private repository: IMongoRepository<WorkoutProgram>;
-    public constructor(repo: IMongoRepository<WorkoutProgram>) {
+    private repo: Collection;
+
+    public constructor(private DBUrl: string, private WorkoutProgramCollectionName: string) {
         super();
-        this.repository = repo;
+    }
+
+    public ConnectToDb(): Promise<void> {
+        return MongoClient.connect(this.DBUrl).then((db) => {
+            this.repo = db.collection(this.WorkoutProgramCollectionName)
+        });
     }
 
     public GetAll(req, res): void {
         this.SetHeaders(res);
-        this.repository.Connect()
-            .then((connected) => {
-                if (!connected) {
-                    throw new Error("Connection not established to database");
-                }
-                return this.repository.Read({});
-            })
-            .then((data) => {
+        console.log("get all");
+        this.ConnectToDb()
+            .then(() => this.repo.find({}).toArray())
+            .then(data => {
+                console.log(data);
                 res.send(JSON.stringify(data));
-                this.SendNotFoundError(res);
-            });
+            })
+
     }
 
     public Get(req, res): void {
         this.SetHeaders(res);
         let id = req.params['id'];
-        this.repository.Connect()
-            .then((connected) => {
-                if (!connected) {
-                    throw new Error("Connection not established to database");
-                }
-                return this.repository.Read({ 'id': id });
-            })
+
+        this.ConnectToDb()
+            .then(() => this.repo.findOne({ '_id': new ObjectID(id) }))
             .then((data) => {
-                if (data.length == 1) {
-                    res.send(JSON.stringify(data[0]));
-                }
-                else {
-                    this.SendNotFoundError(res);
-                }
-            });
+                console.log(data);
+                res.send(JSON.stringify(data));
+                //this.SendNotFoundError(res);
+            })
     }
 
     public Post(req, res): void {
         this.SetHeaders(res);
-        this.repository.Connect()
-            .then((connected) => {
-                if (!connected) {
-                    throw new Error("Connection not established to database");
-                }
-                let workoutProgram = new WorkoutProgram();
-                return this.repository.Create(workoutProgram);
-            })
-            .then((data) => {
-                if (data.length == 1) {
-                    res.send(JSON.stringify({ 'id': data[0] }));
+
+        this.ConnectToDb()
+            .then(() => this.repo.insertOne(new WorkoutProgram()))
+            .then((result) => {
+                if (result.result.ok == 1) {
+                    res.send(JSON.stringify({ id: result.insertedId, data: result.ops.find(() => true) }));
                 }
                 else {
-                    throw new Error("New workout program could not be created");
+                    // error
+                    //this.SendNotFoundError(res);
                 }
             });
     }
@@ -84,25 +77,15 @@ export class WorkoutController extends APIControllerBase {
 
         this.SetHeaders(res);
         let id = req.params['id'];
-        this.repository.Connect()
-            .then((connected) => {
-                if (!connected) {
-                    throw new Error("Connection not established to database");
-                }
-                return this.repository.Read({ 'id': id })
-            })
-            .then((data) => {
-                if (data.length == 1) {
-                    return this.repository.Update({ 'id': id }, obj).then((result) => {
-                        if (result) {
-                            res.status(200);
-                            res.send(JSON.stringify(data[0]));
-                        }
-                        throw new Error("Put operation unsuccessful");
-                    });
+
+        this.ConnectToDb()
+            .then(() => this.repo.findOneAndReplace({ '_id': new ObjectID(id) }, obj))
+            .then((result) => {
+                if (result.ok == 1) {
+                    res.send(JSON.stringify({ id: id, data: obj }));
                 }
                 else {
-                    this.SendNotFoundError(res);
+                    // error
                 }
             });
     }
@@ -123,29 +106,15 @@ export class WorkoutController extends APIControllerBase {
 
         this.SetHeaders(res);
         let id = req.params['id'];
-        this.repository.Connect()
-            .then((connected) => {
-                if (!connected) {
-                    throw new Error("Connection not established to database");
-                }
-                return this.repository.Read({ 'id': id })
-            })
-            .then((data) => {
-                if (data.length == 1) {
-                    return this.repository.Update({ 'id': id }, obj).then((result) => {
-                        if (result) {
-                            // Herre klamt hack, et ekstra database roundtrip uden grund
-                            return this.repository.Read({ 'id': id })
-                                .then((result) => {
-                                    res.status(200);
-                                    res.send(JSON.stringify(result[0]));
-                                });
-                        }
-                        throw new Error("Patch operation unsuccessful");
-                    });
+
+        this.ConnectToDb()
+            .then(() => this.repo.findOneAndUpdate({ '_id': new ObjectID(id) }, obj))
+            .then((result) => {
+                if (result.ok == 1) {
+                    res.send(JSON.stringify(result.value));
                 }
                 else {
-                    this.SendNotFoundError(res);
+                    // error
                 }
             });
     }
@@ -153,28 +122,17 @@ export class WorkoutController extends APIControllerBase {
     public Delete(req, res): void {
         this.SetHeaders(res);
         let id = req.params['id'];
-        this.repository.Connect()
-            .then((connected) => {
-                if (!connected) {
-                    throw new Error("Connection not established to database");
-                }
-                return this.repository.Read({ 'id': id })
-            })
-            .then((data) => {
-                if (data.length == 1) {
-                    return this.repository.Delete(data[0]).then((result) => {
-                        if (result) {
-                            res.status(200);
-                            res.send();
-                            return;
-                        }
-                        throw new Error("Delete operation unsuccessful");
-                    });
+
+
+        this.ConnectToDb()
+            .then(() => this.repo.findOneAndDelete({ '_id': new ObjectID(id) }))
+            .then((result) => {
+                if (result.ok == 1) {
+                    res.send();
                 }
                 else {
-                    this.SendNotFoundError(res);
+                    // error
                 }
-                return;
             });
     }
 
@@ -198,70 +156,34 @@ export class WorkoutController extends APIControllerBase {
         return true;
     }
 
-    // public GetExercises(req, res): void {
-    //     this.SetHeaders(res);
-    //     this.repository.Connect()
-    //         .then((connected) => {
-    //             if (!connected) {
-    //                 throw new Error("Connection not established to database");
-    //             }
-    //             return this.repository.Read({});
-    //         });
-    // }
-
     public GetExercise(req, res): void {
         this.SetHeaders(res);
         let id = req.params['id'];
         let index = req.params['index'];
 
-        this.repository.Connect()
-            .then((connected) => {
-                if (!connected) {
-                    throw new Error("Connection not established to database");
-                }
-                return this.repository.Read({ 'id': id });
-            })
+        this.ConnectToDb()
+            .then(() => this.repo.findOne({ '_id': new ObjectID(id) }))
             .then((data) => {
-                if (data.length == 1 && data[0].ExerciseList[index] != undefined) {
-                    res.status(200);
-                    res.send(JSON.stringify(data[0].ExerciseList[index]));
-                }
-                else {
-                    this.SendNotFoundError(res);
-                }
+                console.log(data.ExerciseList[index]);
+                res.send(JSON.stringify(data.ExerciseList[index]));
             });
     }
 
     public PostExercise(req, res): void {
         this.SetHeaders(res);
         let id = req.params['id'];
-        let index = req.params['index'];
 
-        this.repository.Connect()
-            .then((connected) => {
-                if (!connected) {
-                    throw new Error("Connection not established to database");
-                }
-                return this.repository.Read({ 'id': id });
-            })
-            .then((data) => {
-                if (data.length == 1) {
-                    let list = data[0].ExerciseList;
-                    let exercise = new Exercise();
-                    list.push(exercise);
-                    return this.repository.Update({ 'id': id }, { 'ExerciseList': list }).then(result => result ? { 'index': list.length - 1, 'exercise': exercise } : undefined);
-                }
-                else {
-                    this.SendNotFoundError(res);
-                }
-            })
+        this.ConnectToDb()
+            .then(() => this.repo.findOneAndUpdate({ '_id': new ObjectID(id) },
+                { $push: { ExerciseList: new Exercise() } }))
             .then((result) => {
-                if (result != undefined) {
-                    res.status(200);
-                    res.send(JSON.stringify(result));
+                if (result.ok = 1) {
+                    let index = result.value.ExerciseList.length - 1;
+                    console.log(result.value.ExerciseList[index]);
+                    res.send(JSON.stringify(result.value.ExerciseList[index]));
                 }
                 else {
-                    throw new Error("New Excercise could not be created");
+                    // error
                 }
             });
     }
@@ -284,31 +206,17 @@ export class WorkoutController extends APIControllerBase {
         let id = req.params['id'];
         let index = req.params['index'];
 
-        this.repository.Connect()
-            .then((connected) => {
-                if (!connected) {
-                    throw new Error("Connection not established to database");
-                }
-                return this.repository.Read({ 'id': id });
-            })
-            .then((data) => {
-                if (data.length == 1 && data[0].ExerciseList[index] != undefined) {
-                    let list = data[0].ExerciseList;
-                    list[index] = obj;
-                    return this.repository.Update({ 'id': id }, { 'ExerciseList': list })
-                        .then(result => result ? { 'index': list.length - 1, 'exercise': obj } : undefined);
-                }
-                else {
-                    this.SendNotFoundError(res);
-                }
-            })
+        let fieldsToUpdate = {};
+        fieldsToUpdate['$set']['ExerciseList.' + index] = obj;
+
+        this.ConnectToDb()
+            .then(() => this.repo.findOneAndUpdate({ _id: new ObjectID(id) }, fieldsToUpdate))
             .then((result) => {
-                if (result != undefined) {
-                    res.status(200);
-                    res.send(JSON.stringify(result));
+                if (result.ok == 1) {
+                    res.send(JSON.stringify(result.value.ExerciseList[index]));
                 }
                 else {
-                    throw new Error("Excercise could not be overwritten");
+                    // error
                 }
             });
     }
@@ -331,33 +239,19 @@ export class WorkoutController extends APIControllerBase {
         let id = req.params['id'];
         let index = req.params['index'];
 
-        this.repository.Connect()
-            .then((connected) => {
-                if (!connected) {
-                    throw new Error("Connection not established to database");
-                }
-                return this.repository.Read({ 'id': id });
-            })
-            .then((data) => {
-                if (data.length == 1 && data[0].ExerciseList[index] != undefined) {
-                    let list = data[0].ExerciseList;
-                    for (let field in obj) {
-                        list[index][field] = obj[field];
-                    }
-                    return this.repository.Update({ 'id': id }, { 'ExerciseList': list })
-                        .then(result => result ? { 'index': list.length - 1, 'exercise': list[index] } : undefined);
-                }
-                else {
-                    this.SendNotFoundError(res);
-                }
-            })
+        let fieldsToUpdate = {};
+        for (let field in obj) {
+            fieldsToUpdate['$set']['ExerciseList.' + index + '.' + field] = obj[field];
+        }
+
+        this.ConnectToDb()
+            .then(() => this.repo.findOneAndUpdate({ _id: new ObjectID(id) }, fieldsToUpdate))
             .then((result) => {
-                if (result != undefined) {
-                    res.status(200);
-                    res.send(JSON.stringify(result));
+                if (result.ok == 1) {
+                    res.send(JSON.stringify(result.value.ExerciseList[index]));
                 }
                 else {
-                    throw new Error("Excercise could not be overwritten");
+                    // error
                 }
             });
     }
@@ -367,31 +261,25 @@ export class WorkoutController extends APIControllerBase {
         let id = req.params['id'];
         let index = req.params['index'];
 
-        this.repository.Connect()
-            .then((connected) => {
-                if (!connected) {
-                    throw new Error("Connection not established to database");
-                }
-                return this.repository.Read({ 'id': id });
-            })
+        let fieldsToUpdate = {};
+
+        this.ConnectToDb()
+            .then(() => this.repo.findOne({ _id: new ObjectID(id) }))
             .then((data) => {
-                if (data.length == 1 && data[0].ExerciseList[index] != undefined) {
-                    let list = data[0].ExerciseList;
-                    list.splice(index, 1);
-                    return this.repository.Update({ 'id': id }, { 'ExerciseList': list });
-                }
-                else {
-                    this.SendNotFoundError(res);
-                }
+                let obj = data as WorkoutProgram;
+                obj.ExerciseList.splice(index, 1);
+                return obj;
             })
-            .then((result) => {
-                if (result) {
-                    res.status(200);
-                    res.send();
-                }
-                else {
-                    throw new Error("Excercise could not be overwritten");
-                }
+            .then((obj) => {
+                this.repo.findOneAndUpdate({ _id: new ObjectID(id) }, obj)
+                    .then((result) => {
+                        if (result.ok == 1) {
+                            res.send();
+                        }
+                        else {
+                            // error
+                        }
+                    });
             });
     }
 
@@ -418,7 +306,8 @@ export class WorkoutController extends APIControllerBase {
 
 
 function CreateController(): WorkoutController {
-    return new WorkoutController(GetWorkoutProgramRepo());
+    let conf = CurrentConfig();
+    return new WorkoutController(conf.DBConnectionString, conf.WorkoutProgramsCollection);
 }
 let WorkoutControllerRoutes = router;
 
