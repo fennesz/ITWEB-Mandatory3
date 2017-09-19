@@ -6,8 +6,8 @@ export interface ConfigSettings {
 }
 
 const defaultConf: ConfigSettings = {
-    DBConnectionString: "",
-    WorkoutProgramsCollection: ""
+    DBConnectionString: "hurhdurh",
+    WorkoutProgramsCollection: "WorkoutPrograms"
 };
 
 let curConf: ConfigSettings = null;
@@ -32,7 +32,6 @@ export function LoadConfig(): Promise<ConfigSettings> {
                             curConf = defaultConf;
                             let connectionString = process.env.CONNECTION_STRING != undefined ? process.env.CONNECTION_STRING : curConf.DBConnectionString;
                             curConf.DBConnectionString = connectionString;
-                            console.log(curConf);
                             return resolve(CurrentConfig());
                         }
                     });
