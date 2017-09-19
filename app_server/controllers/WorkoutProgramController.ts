@@ -200,7 +200,6 @@ export class WorkoutController extends APIControllerBase {
 
     // public GetExercises(req, res): void {
     //     this.SetHeaders(res);
-
     //     this.repository.Connect()
     //         .then((connected) => {
     //             if (!connected) {
