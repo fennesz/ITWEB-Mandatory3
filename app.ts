@@ -13,9 +13,7 @@ let app = express();
 
 /*Clears database and adds initial data*/
 LoadConfig().then((val) => {
-  console.log(val);
   console.log("Current environment: " + process.env.NODE_ENV);
-  process.env.NODE_ENV = "PRODUCTION";
 }).then(() => {
   // uncomment after placing your favicon in /public
   //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
@@ -46,7 +44,7 @@ LoadConfig().then((val) => {
     //res.render('error');
   });
 
-  console.log("App started");
+  console.log("App started on port: " + app.get('port'));
 });
 
 
