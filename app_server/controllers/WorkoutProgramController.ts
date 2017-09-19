@@ -13,6 +13,21 @@ export class WorkoutController extends APIControllerBase {
         this.repository = repo;
     }
 
+    public GetAll(req, res): void {
+        this.SetHeaders(res);
+        this.repository.Connect()
+            .then((connected) => {
+                if (!connected) {
+                    throw new Error("Connection not established to database");
+                }
+                return this.repository.Read({});
+            })
+            .then((data) => {
+                res.send(JSON.stringify(data));
+                this.SendNotFoundError(res);
+            });
+    }
+
     public Get(req, res): void {
         this.SetHeaders(res);
         let id = req.params['id'];
@@ -182,6 +197,18 @@ export class WorkoutController extends APIControllerBase {
         }
         return true;
     }
+
+    // public GetExercises(req, res): void {
+    //     this.SetHeaders(res);
+
+    //     this.repository.Connect()
+    //         .then((connected) => {
+    //             if (!connected) {
+    //                 throw new Error("Connection not established to database");
+    //             }
+    //             return this.repository.Read({});
+    //         });
+    // }
 
     public GetExercise(req, res): void {
         this.SetHeaders(res);
@@ -397,6 +424,9 @@ function CreateController(): WorkoutController {
 let WorkoutControllerRoutes = router;
 
 // Root routes
+WorkoutControllerRoutes.get('/', (req, res) => {
+    CreateController().GetAll(req, res);
+})
 WorkoutControllerRoutes.get('/:id', (req, res) => {
     CreateController().Get(req, res);
 });

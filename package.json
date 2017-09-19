@@ -4,9 +4,9 @@
   "private": true,
   "scripts": {
     "deploy": "npm install && npm start",
-    "copyfiles": "cp -r ./app_server/views ./app_server/build/app_server/ && cp -r ./app_server/bin ./app_server/build/ && cp -r ./app_server/public ./app_server/build/",
-    "start": "tsc && node ./app_server/bin/www",
-    "buildAndRun": "tsc --outDir ./app_server/build && npm run copyfiles && cd build && node ./app_server/bin/www",
+    "copyfiles": "cd app_server && cp -r ./bin ./build/",
+    "start": "cd app_server && tsc && node ./bin/www",
+    "buildAndRun": "cd app_server && tsc --outDir ./build && npm run copyfiles && cd build && node ./bin/www",
     "watch": "nodemon -e ts"
   },
   "engines": {
