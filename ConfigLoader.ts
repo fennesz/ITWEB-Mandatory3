@@ -1,9 +1,13 @@
 import * as fs from 'fs';
 
 export interface ConfigSettings {
+    DBConnectionString: string;
+    WorkoutProgramsCollection: string;
 }
 
 const defaultConf: ConfigSettings = {
+    DBConnectionString: "",
+    WorkoutProgramsCollection: ""
 };
 
 let curConf: ConfigSettings = null;
