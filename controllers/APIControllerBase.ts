@@ -16,10 +16,6 @@ export class APIControllerBase {
         res.send(JSON.stringify({ err: 'Content type not JSON' }));
     }
 
-    protected CheckData(req): boolean {
-        return typeof req.body.data == 'string';
-    }
-
     protected SendWrongDataError(res): void {
         res.status(500);
         res.send(JSON.stringify({ err: 'Sent data is incorrect' }));

@@ -101,6 +101,10 @@ export class ExampleController extends APIControllerBase {
             this.SendNotFoundError(res);
         }
     }
+
+    private CheckData(req): boolean {
+        return typeof req.body.data == 'string';
+    }
 }
 
 let Controller = new ExampleController();
