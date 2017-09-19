@@ -6,8 +6,8 @@ export interface ConfigSettings {
 }
 
 const defaultConf: ConfigSettings = {
-    DBConnectionString: "",
-    WorkoutProgramsCollection: ""
+    DBConnectionString: "hurhdurh",
+    WorkoutProgramsCollection: "WorkoutPrograms"
 };
 
 let curConf: ConfigSettings = null;
