@@ -104,11 +104,40 @@ export class WorkoutController extends APIControllerBase  {
         }
         */
     }
+    public GetExercise(req, res): void {
+        this.SetHeaders(res);
+        let id = req.params['id'];
+        let index = req.params['index'];
+        throw new Error("Not implemented");
+    }
+
+    public PostExercise(req, res): void {
+        this.SetHeaders(res);
+        let id = req.params['id'];
+        let index = req.params['index'];
+        throw new Error("Not implemented");
+    }
+
+    public PutExercise(req, res): void {
+        throw new Error("Not implemented");
+    }
+
+    public PatchExercise(req, res): void {
+        throw new Error("Not implemented");
+    }
+
+    public DeleteExercise(req, res): void {
+        this.SetHeaders(res);
+        let id = req.params['id'];
+        let index = req.params['index'];
+        throw new Error("Not implemented");
+    }
 }
 
 let Controller = new WorkoutController();
 let WorkoutControllerRoutes = router;
 
+// Root routes
 WorkoutControllerRoutes.get('/:id', (req, res) => {
     Controller.Get(req, res);
 });
@@ -123,6 +152,23 @@ WorkoutControllerRoutes.patch('/:id', (req, res) => {
 });
 WorkoutControllerRoutes.delete('/:id', (req, res) => {
     Controller.Delete(req, res);
+});
+
+// Exercise routes
+WorkoutControllerRoutes.get('/:id/exercise/:index', (req, res) => {
+    Controller.GetExercise(req, res);
+});
+WorkoutControllerRoutes.post('/:id/exercise', (req, res) => {
+    Controller.PostExercise(req, res);
+});
+WorkoutControllerRoutes.put('/:id/exercise/:index', (req, res) => {
+    Controller.PutExercise(req, res);
+});
+WorkoutControllerRoutes.patch('/:id/exercise/:index', (req, res) => {
+    Controller.PatchExercise(req, res);
+});
+WorkoutControllerRoutes.delete('/:id/exercise/:index', (req, res) => {
+    Controller.DeleteExercise(req, res);
 });
 
 export { WorkoutControllerRoutes };
