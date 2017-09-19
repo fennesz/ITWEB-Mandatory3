@@ -1,3 +1,4 @@
+import { ModelValidatorService } from '../services/ModelValidatorService';
 import { APIControllerBase } from './APIControllerBase';
 import { WorkoutProgram } from '../models/WorkoutProgram';
 import { Exercise } from '../models/Exercise';
@@ -9,6 +10,7 @@ var router = express.Router();
 
 export class WorkoutController extends APIControllerBase {
     private repo: Collection;
+    private modelValidator: ModelValidatorService;
 
     public constructor(private DBUrl: string, private WorkoutProgramCollectionName: string) {
         super();
@@ -17,6 +19,7 @@ export class WorkoutController extends APIControllerBase {
     public ConnectToDb(): Promise<void> {
         return MongoClient.connect(this.DBUrl).then((db) => {
             this.repo = db.collection(this.WorkoutProgramCollectionName)
+            this.modelValidator = new ModelValidatorService();
         });
     }
 
@@ -70,7 +73,7 @@ export class WorkoutController extends APIControllerBase {
 
         // Guards against wrong data
         let obj = req.body as WorkoutProgram;
-        if (!this.CheckPutData(obj)) {
+        if (!this.modelValidator.CheckPutData(obj)) {
             this.SendWrongDataError(res);
             return;
         }
@@ -99,7 +102,7 @@ export class WorkoutController extends APIControllerBase {
 
         // Guards against wrong data
         let obj = req.body as WorkoutProgram;
-        if (!this.CheckPatchData(obj)) {
+        if (!this.modelValidator.CheckPatchData(obj)) {
             this.SendWrongDataError(res);
             return;
         }
@@ -134,26 +137,6 @@ export class WorkoutController extends APIControllerBase {
                     // error
                 }
             });
-    }
-
-    private CheckPutData(data: WorkoutProgram): boolean {
-        let workoutProgram = new WorkoutProgram();
-        for (let field in workoutProgram) {
-            if (data[field] == undefined) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private CheckPatchData(data: any): boolean {
-        let workoutProgram = new WorkoutProgram();
-        for (let field in data) {
-            if (workoutProgram[field] == undefined) {
-                return false;
-            }
-        }
-        return true;
     }
 
     public GetExercise(req, res): void {
@@ -197,7 +180,7 @@ export class WorkoutController extends APIControllerBase {
 
         // Guards against wrong data
         let obj = req.body as Exercise;
-        if (!this.CheckPutExerciseData(obj)) {
+        if (!this.modelValidator.CheckPutExerciseData(obj)) {
             this.SendWrongDataError(res);
             return;
         }
@@ -230,7 +213,7 @@ export class WorkoutController extends APIControllerBase {
 
         // Guards against wrong data
         let obj = req.body as Exercise;
-        if (!this.CheckPatchExerciseData(obj)) {
+        if (!this.modelValidator.CheckPatchExerciseData(obj)) {
             this.SendWrongDataError(res);
             return;
         }
@@ -281,26 +264,6 @@ export class WorkoutController extends APIControllerBase {
                         }
                     });
             });
-    }
-
-    private CheckPutExerciseData(data: Exercise): boolean {
-        let exercise = new Exercise();
-        for (let field in exercise) {
-            if (data[field] == undefined) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private CheckPatchExerciseData(data: any): boolean {
-        let exercise = new Exercise();
-        for (let field in data) {
-            if (exercise[field] == undefined) {
-                return false;
-            }
-        }
-        return true;
     }
 }
 
