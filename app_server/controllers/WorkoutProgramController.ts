@@ -281,7 +281,7 @@ export class WorkoutController extends APIControllerBase {
                     res.send(JSON.stringify(result));
                 }
                 else {
-                    throw new Error("Excercise could not be overwritten");
+                    throw new Error("Exercise could not be overwritten");
                 }
             });
     }
