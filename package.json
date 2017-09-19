@@ -4,9 +4,7 @@
   "private": true,
   "scripts": {
     "deploy": "npm install && npm start",
-    "copyfiles": "cd app_server && cp -r ./bin ./build/",
     "start": "cd app_server && tsc --outDir ./build && node ./bin/www",
-    "buildAndRun": "cd app_server && tsc --outDir ./build && npm run copyfiles && cd build && node ./bin/www",
     "watch": "nodemon -e ts"
   },
   "engines": {
