@@ -14,11 +14,6 @@ export function CurrentConfig(): ConfigSettings {
 
 export function LoadConfig(): Promise<ConfigSettings> {
     return new Promise((resolve, reject) => {
-        if (curConf != null) {
-            console.log("CurrentConf exists");
-            resolve(CurrentConfig());
-            return;
-        }
         let path = "./conf.json";
 
         fs.readFile(path, (err, data) => {
@@ -31,7 +26,7 @@ export function LoadConfig(): Promise<ConfigSettings> {
                         else {
                             console.log("File doesn't exist, creating default");
                             curConf = defaultConf;
-                            resolve(CurrentConfig());
+                            return resolve(CurrentConfig());
                         }
                     });
                 }
@@ -40,10 +35,32 @@ export function LoadConfig(): Promise<ConfigSettings> {
                 }
             }
             else {
-                console.log("Current conf file exists, use it");
-                curConf = JSON.parse(data.toString()) as ConfigSettings;
-                resolve(CurrentConfig());
+                console.log("Config file exists, use it");
+                let conf = JSON.parse(data.toString()) as ConfigSettings;
+                if(!ConfContainsAllFields(conf)){
+                    console.log("Current config missing fields, adding");
+                    FillConfWithDefaultValues(conf);
+                }
+                curConf = conf;
+                return resolve(CurrentConfig());
             }
         });
     });
+}
+
+function ConfContainsAllFields(conf: ConfigSettings) {
+    for(let field in defaultConf) {
+        if(conf[field] == undefined) {
+            return false;
+        }
+    }
+    return true;
+}
+
+function FillConfWithDefaultValues(conf: ConfigSettings) {
+    for(let field in defaultConf) {
+        if(conf[field] == undefined) {
+            conf[field] = defaultConf[field];
+        }
+    }
 }
