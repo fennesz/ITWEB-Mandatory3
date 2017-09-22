@@ -1,14 +1,20 @@
+import { AppRouterModule } from '../AppRouterModule/AppRouterModule.module';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
+import { NotfoundComponent } from './notfound/notfound.component';
+import { WorkoutprogramComponent } from './workoutprogram/workoutprogram.component';
 
 @NgModule({
   declarations: [
-    AppComponent
-  ],
+    AppComponent,
+    NotfoundComponent,
+    WorkoutprogramComponent
+],
   imports: [
-    BrowserModule
+    BrowserModule,
+    AppRouterModule
   ],
   providers: [],
   bootstrap: [AppComponent]
