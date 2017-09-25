@@ -1,5 +1,7 @@
+import { ExerciseModel } from './exercisemodel';
+
 export interface WorkoutProgramModel {
-    _id: any;
-    Name: any;
-    EerciseList: any[];
+    _id: string;
+    Name: string;
+    ExerciseList: ExerciseModel[];
 }

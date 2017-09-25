@@ -1,29 +1,29 @@
-<!--<p-dataTable [value]="cars" selectionMode="single" [(selection)]="selectedCar" (onRowSelect)="onRowSelect($event)" [paginator]="true" rows="15" [responsive]="true">
-    <p-header>Workout Program editor</p-header>
-    <p-column field="exercise" header="Exercise" [sortable]="true"></p-column>
-    <p-column field="description" header="Description" [sortable]="true"></p-column>
-    <p-column field="repsortime" header="Reps/Time" [sortable]="true"></p-column>
-    <p-column field="Set" header="Set" [sortable]="true"></p-column>
+<p-dataTable [value]="(workoutProgramModel | async)?.ExerciseList" selectionMode="single" [(selection)]="selectedExercise" (onRowSelect)="onRowSelect($event)" [paginator]="true" rows="15" [responsive]="true">
+    <p-header>{{(workoutProgramModel | async)?.Name}}</p-header>
+    <p-column field="ExerciseName" header="Exercise Name" [sortable]="true"></p-column>
+    <p-column field="Description" header="Description" [sortable]="true"></p-column>
+    <p-column field="RepsOrTime" header="Reps/Time" [sortable]="true"></p-column>
+    <p-column field="Sets" header="Sets" [sortable]="true"></p-column>
     <p-footer><div class="ui-helper-clearfix" style="width:100%"><button type="button" pButton icon="fa-plus" style="float:left" (click)="showDialogToAdd()" label="Add"></button></div></p-footer>
 </p-dataTable>
 
-<p-dialog header="Car Details" [(visible)]="displayDialog" [responsive]="true" showEffect="fade" [modal]="true">
-    <div class="ui-grid ui-grid-responsive ui-fluid" *ngIf="car">
+<p-dialog header="Add Exercise" [(visible)]="displayDialog" [responsive]="true" showEffect="fade" [modal]="true">
+    <div class="ui-grid ui-grid-responsive ui-fluid" *ngIf="exerciseToAdd">
         <div class="ui-grid-row">
-            <div class="ui-grid-col-4"><label for="vin">Vin</label></div>
-            <div class="ui-grid-col-8"><input pInputText id="vin" [(ngModel)]="car.vin" /></div>
+            <div class="ui-grid-col-4"><label for="name">Exercise Name</label></div>
+            <div class="ui-grid-col-8"><input pInputText id="name" [(ngModel)]="exerciseToAdd.ExerciseName" /></div>
         </div>
         <div class="ui-grid-row">
-            <div class="ui-grid-col-4"><label for="year">Year</label></div>
-            <div class="ui-grid-col-8"><input pInputText id="year" [(ngModel)]="car.year" /></div>
+            <div class="ui-grid-col-4"><label for="description">Description</label></div>
+            <div class="ui-grid-col-8"><input pInputText id="description" [(ngModel)]="exerciseToAdd.Description" /></div>
         </div>
         <div class="ui-grid-row">
-            <div class="ui-grid-col-4"><label for="brand">Brand</label></div>
-            <div class="ui-grid-col-8"><input pInputText id="brand" [(ngModel)]="car.brand" /></div>
+            <div class="ui-grid-col-4"><label for="repsortime">Reps/Time</label></div>
+            <div class="ui-grid-col-8"><input pInputText id="repsortime" [(ngModel)]="exerciseToAdd.RepsOrTime" /></div>
         </div>
         <div class="ui-grid-row">
-            <div class="ui-grid-col-4"><label for="color">Color</label></div>
-            <div class="ui-grid-col-8"><input pInputText id="color" [(ngModel)]="car.color" /></div>
+            <div class="ui-grid-col-4"><label for="set">Set</label></div>
+            <div class="ui-grid-col-8"><input pInputText id="set" [(ngModel)]="exerciseToAdd.Sets" /></div>
         </div>
     </div>
     <p-footer>
@@ -32,4 +32,4 @@
             <button type="button" pButton icon="fa-check" (click)="save()" label="Save"></button>
         </div>
     </p-footer>
-</p-dialog>-->
+  </p-dialog>

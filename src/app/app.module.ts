@@ -1,8 +1,9 @@
+import { WorkoutProgramApiService } from './services/workoutprogramapi.service';
 import { HttpClient, HttpClientModule, HttpHandler } from '@angular/common/http';
 import { AppRouterModule } from '../AppRouterModule/AppRouterModule.module';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import {DataTableModule, DialogModule, SharedModule, ButtonModule } from 'primeng/primeng';
+import { DataTableModule, DialogModule, SharedModule, ButtonModule, ContextMenuModule } from 'primeng/primeng';
 import { AppComponent } from './app.component';
 import { NotfoundComponent } from './notfound/notfound.component';
 import { WorkoutprogramComponent } from './workoutprogramlist/workoutprogram/workoutprogram.component';
@@ -26,10 +27,12 @@ import { WorkoutProgramListComponent } from './workoutprogramlist/workoutprogram
     FormsModule,
     BrowserAnimationsModule,
     ButtonModule,
-    HttpClientModule
+    HttpClientModule,
+    ContextMenuModule
   ],
   providers: [
     HttpClient,
+    WorkoutProgramApiService
   ],
   bootstrap: [AppComponent]
 })

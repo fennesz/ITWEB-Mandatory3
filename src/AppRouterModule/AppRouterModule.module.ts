@@ -6,6 +6,7 @@ import { RouterModule, Routes } from '@angular/router';
 
 const appRoutes: Routes = [
   { path: 'workoutprogram', component: WorkoutProgramListComponent },
+  { path: 'workoutprogram/:id', component: WorkoutprogramComponent },
   { path: '',   redirectTo: '/workoutprogram', pathMatch: 'full' },
   { path: '404', component: NotfoundComponent},
   { path: '**', redirectTo: '/404', pathMatch: 'full' }
