@@ -114,3 +114,8 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
+
+roboto-v*
+color.*.png
+line.*.gif
+styles.*.bundle.css

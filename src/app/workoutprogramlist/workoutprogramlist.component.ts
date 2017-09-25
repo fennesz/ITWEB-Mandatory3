@@ -14,7 +14,7 @@ export class WorkoutProgramListComponent implements OnInit {
   displayDialog: boolean;
   newProgram: boolean;
   programToAdd: WorkoutprogramComponent;
-  selectedProgram: WorkoutprogramComponent;
+  selectedWorkoutprogram: WorkoutprogramComponent;
   programList: Observable<WorkoutProgramModel[]>;
 
   constructor(private http: HttpClient) { }
@@ -27,6 +27,18 @@ export class WorkoutProgramListComponent implements OnInit {
     this.newProgram = true;
     this.programToAdd = new WorkoutprogramComponent();
     this.displayDialog = true;
+  }
+
+  public onRowSelect(event) {
+
+  }
+
+  public delete() {
+
+  }
+
+  public save() {
+
   }
 
 }
