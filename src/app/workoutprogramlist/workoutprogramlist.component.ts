@@ -39,6 +39,7 @@ export class WorkoutProgramListComponent implements OnInit {
   }
 
   private editWorkoutProgram() {
+    this.programToAddOrEdit = {} as WorkoutProgramModel;
     this.programToAddOrEdit = Object.assign(this.programToAddOrEdit, this.selectedWorkoutprogram);
     this.displayDialogEdit = true;
   }
@@ -57,9 +58,19 @@ export class WorkoutProgramListComponent implements OnInit {
     this.apiService.postWorkoutProgram(this.programToAddOrEdit).subscribe();
   }
 
-  public saveEdit() { //
-    this.displayDialogEdit = false;
-    this.apiService.editWorkoutProgram(this.programToAddOrEdit).subscribe();
+  public saveEdit() {
+    console.log(this.programToAddOrEdit);
+    this.apiService.editWorkoutProgram(this.programToAddOrEdit).subscribe((obj) => {
+      this.displayDialogEdit = false;
+      this.programList = this.programList.map(result => {
+          result.forEach((ex => {
+            if (ex._id === this.programToAddOrEdit._id) {
+              ex = Object.assign(ex, this.programToAddOrEdit);
+            }
+          }));
+          return result;
+      });
+  });
   }
 
     private navigateToId(id: string) {

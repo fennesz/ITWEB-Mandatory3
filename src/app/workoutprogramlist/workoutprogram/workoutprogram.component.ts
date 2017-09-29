@@ -5,6 +5,7 @@ import { WorkoutProgramModel } from '../../../models/workoutprogrammodel';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/operator/map';
 
 @Component({
   selector: 'app-workoutprogram',
@@ -28,13 +29,13 @@ export class WorkoutprogramComponent implements OnInit {
     this.route.params.subscribe(params => {
       this.id = params['id']; // (+) converts string 'id' to a number
       this.workoutProgramModel = this.workoutProgramService.getWorkoutProgram(this.id);
-      this.workoutProgramModel.subscribe((out) => console.log(out));
+      this.workoutProgramModel.subscribe();
    });
 
    this.items = [
     {label: 'Delete', icon: 'fa-close', command: (event) => this.delete()},
     {label: 'Edit', icon: 'fa-close', command: (event) => this.showDialogToEdit()},
-  ];
+    ];
   }
 
   public showDialogToAdd() {
@@ -46,10 +47,7 @@ export class WorkoutprogramComponent implements OnInit {
   public showDialogToEdit() {
     this.displayDialogEdit = true;
     this.exerciseToAddOrEdit = {} as ExerciseModel;
-    this.exerciseToAddOrEdit = Object.assign(this.exerciseToAddOrEdit, this.selectedExercise); 
-  }
-
-  private editExercise() {
+    this.exerciseToAddOrEdit = Object.assign(this.exerciseToAddOrEdit, this.selectedExercise);
   }
 
   public onRowSelect(event) {
@@ -69,7 +67,14 @@ export class WorkoutprogramComponent implements OnInit {
   public saveEdit() {
     this.workoutProgramService.editExerciseInWorkoutProgram(this.id, this.exerciseToAddOrEdit).subscribe((obj) => {
         this.displayDialogEdit = false;
-        console.log(obj);
+        this.workoutProgramModel = this.workoutProgramModel.map(result => {
+            result.ExerciseList.forEach((ex => {
+              if (ex._id === this.exerciseToAddOrEdit._id) {
+                ex = Object.assign(ex, this.exerciseToAddOrEdit);
+              }
+            }));
+            return result;
+        });
     });
   }
 }
