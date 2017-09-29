@@ -1,4 +1,4 @@
-<p-dataTable [value]="(workoutProgramModel | async)?.ExerciseList" selectionMode="single" [(selection)]="selectedExercise" (onRowSelect)="onRowSelect($event)" [paginator]="true" rows="15" [responsive]="true">
+<p-dataTable [contextMenu]="cm" [value]="(workoutProgramModel | async)?.ExerciseList" selectionMode="single" [(selection)]="selectedExercise" (onRowSelect)="onRowSelect($event)" [paginator]="true" rows="15" [responsive]="true">
     <p-header>{{(workoutProgramModel | async)?.Name}}</p-header>
     <p-column field="ExerciseName" header="Exercise Name" [sortable]="true"></p-column>
     <p-column field="Description" header="Description" [sortable]="true"></p-column>
@@ -7,29 +7,56 @@
     <p-footer><div class="ui-helper-clearfix" style="width:100%"><button type="button" pButton icon="fa-plus" style="float:left" (click)="showDialogToAdd()" label="Add"></button></div></p-footer>
 </p-dataTable>
 
-<p-dialog header="Add Exercise" [(visible)]="displayDialog" [responsive]="true" showEffect="fade" [modal]="true">
-    <div class="ui-grid ui-grid-responsive ui-fluid" *ngIf="exerciseToAdd">
+<p-dialog header="Add Exercise" [(visible)]="displayDialogAdd" [responsive]="true" showEffect="fade" [modal]="true">
+    <div class="ui-grid ui-grid-responsive ui-fluid" *ngIf="exerciseToAddOrEdit">
         <div class="ui-grid-row">
             <div class="ui-grid-col-4"><label for="name">Exercise Name</label></div>
-            <div class="ui-grid-col-8"><input pInputText id="name" [(ngModel)]="exerciseToAdd.ExerciseName" /></div>
+            <div class="ui-grid-col-8"><input pInputText id="name" [(ngModel)]="exerciseToAddOrEdit.ExerciseName" /></div>
         </div>
         <div class="ui-grid-row">
             <div class="ui-grid-col-4"><label for="description">Description</label></div>
-            <div class="ui-grid-col-8"><input pInputText id="description" [(ngModel)]="exerciseToAdd.Description" /></div>
+            <div class="ui-grid-col-8"><input pInputText id="description" [(ngModel)]="exerciseToAddOrEdit.Description" /></div>
         </div>
         <div class="ui-grid-row">
             <div class="ui-grid-col-4"><label for="repsortime">Reps/Time</label></div>
-            <div class="ui-grid-col-8"><input pInputText id="repsortime" [(ngModel)]="exerciseToAdd.RepsOrTime" /></div>
+            <div class="ui-grid-col-8"><input pInputText id="repsortime" [(ngModel)]="exerciseToAddOrEdit.RepsOrTime" /></div>
         </div>
         <div class="ui-grid-row">
             <div class="ui-grid-col-4"><label for="set">Set</label></div>
-            <div class="ui-grid-col-8"><input pInputText id="set" [(ngModel)]="exerciseToAdd.Sets" /></div>
+            <div class="ui-grid-col-8"><input pInputText id="set" [(ngModel)]="exerciseToAddOrEdit.Sets" /></div>
         </div>
     </div>
     <p-footer>
         <div class="ui-dialog-buttonpane ui-helper-clearfix">
-            <button type="button" pButton icon="fa-close" (click)="delete()" label="Delete"></button>
-            <button type="button" pButton icon="fa-check" (click)="save()" label="Save"></button>
+            <button type="button" pButton icon="fa-check" (click)="saveAdd()" label="Save"></button>
         </div>
     </p-footer>
   </p-dialog>
+
+  <p-dialog header="Edit Exercise" [(visible)]="displayDialogEdit" [responsive]="true" showEffect="fade" [modal]="true">
+    <div class="ui-grid ui-grid-responsive ui-fluid" *ngIf="exerciseToAddOrEdit">
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-4"><label for="name">Exercise Name</label></div>
+            <div class="ui-grid-col-8"><input pInputText id="name" [(ngModel)]="exerciseToAddOrEdit.ExerciseName" /></div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-4"><label for="description">Description</label></div>
+            <div class="ui-grid-col-8"><input pInputText id="description" [(ngModel)]="exerciseToAddOrEdit.Description" /></div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-4"><label for="repsortime">Reps/Time</label></div>
+            <div class="ui-grid-col-8"><input pInputText id="repsortime" [(ngModel)]="exerciseToAddOrEdit.RepsOrTime" /></div>
+        </div>
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-4"><label for="set">Set</label></div>
+            <div class="ui-grid-col-8"><input pInputText id="set" [(ngModel)]="exerciseToAddOrEdit.Sets" /></div>
+        </div>
+    </div>
+    <p-footer>
+        <div class="ui-dialog-buttonpane ui-helper-clearfix">
+            <button type="button" pButton icon="fa-check" (click)="saveEdit()" label="Save"></button>
+        </div>
+    </p-footer>
+  </p-dialog>
+
+  <p-contextMenu #cm [model]="items"></p-contextMenu>

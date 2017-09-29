@@ -29,17 +29,17 @@ export class WorkoutProgramListComponent implements OnInit {
     this.items = [
       {label: 'Delete', icon: 'fa-close', command: (event) => this.delete()},
       {label: 'Edit', icon: 'fa-close', command: (event) => this.editWorkoutProgram()},
-  ];
+    ];
   }
 
   public showDialogToAdd() {
     this.newProgram = true;
-    this.programToAddOrEdit = this.cloneWorkoutProgram(this.selectedWorkoutprogram);
+    this.programToAddOrEdit = Object.assign(this.programToAddOrEdit, this.selectedWorkoutprogram);
     this.displayDialogAdd = true;
   }
 
   private editWorkoutProgram() {
-    this.programToAddOrEdit = this.cloneWorkoutProgram(this.selectedWorkoutprogram);
+    this.programToAddOrEdit = Object.assign(this.programToAddOrEdit, this.selectedWorkoutprogram);
     this.displayDialogEdit = true;
   }
 
@@ -60,14 +60,6 @@ export class WorkoutProgramListComponent implements OnInit {
   public saveEdit() { //
     this.displayDialogEdit = false;
     this.apiService.editWorkoutProgram(this.programToAddOrEdit).subscribe();
-  }
-
-  private cloneWorkoutProgram(c: WorkoutProgramModel): WorkoutProgramModel {
-    let wp = {} as WorkoutProgramModel;
-    for(let prop in c) {
-        wp[prop] = c[prop];
-    }
-    return wp;
   }
 
     private navigateToId(id: string) {
