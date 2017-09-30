@@ -34,7 +34,7 @@ export class WorkoutProgramListComponent implements OnInit {
 
   public showDialogToAdd() {
     this.newProgram = true;
-    this.programToAddOrEdit = Object.assign(this.programToAddOrEdit, this.selectedWorkoutprogram);
+    this.programToAddOrEdit = {} as WorkoutProgramModel;
     this.displayDialogAdd = true;
   }
 

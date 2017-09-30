@@ -34,9 +34,10 @@ export class WorkoutProgramApiService {
     }
 
     public postExerciseToWorkoutProgram(id: string, exercise: ExerciseModel): Observable<any> {
-        return this.http.post(this.baseUrl + '/api/workoutprogram/' + id + '/exercise/', exercise).concatMap((link: any) => {
+        return this.http.post(this.baseUrl + '/api/workoutprogram/' + id + '/exercise', exercise).concatMap((link: any) => {
+            const url = 'http://' + link.location;
             let dto = this.createExerciseDtoFromModel(exercise);
-            return this.http.put<ExerciseModel>(link, dto);
+            return this.http.put<ExerciseModel>(url, dto);
         });
     }
 
@@ -47,16 +48,13 @@ export class WorkoutProgramApiService {
     public postWorkoutProgram(workoutprogrammodel: WorkoutProgramModel): Observable<any> {
         const work = workoutprogrammodel as WorkoutProgramModelDto;
         return this.http.post(this.baseUrl + '/api/workoutprogram', workoutprogrammodel).concatMap((link: any) => {
-            const str = 'https://' + link.location;
-            return this.http.put(str, work);
+            const url = 'http://' + link.location;
+            return this.http.put(url, work);
         });
     }
 
     public editWorkoutProgram(workoutprogrammodel: WorkoutProgramModel): Observable<any> {
-        const id: string = workoutprogrammodel._id;
-        delete workoutprogrammodel._id;
-        const work = workoutprogrammodel as WorkoutProgramModelDto;
-        return this.putObjectAndId(id, work);
+        return this.http.patch(this.baseUrl + '/api/workoutprogram/' + workoutprogrammodel._id, {Name: workoutprogrammodel.Name});
     }
 
     private putObjectAndId(id: string, work: WorkoutProgramModelDto): Observable<any> {
