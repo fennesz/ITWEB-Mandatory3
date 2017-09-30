@@ -63,11 +63,8 @@ export class WorkoutProgramListComponent implements OnInit {
   }
 
   private cloneWorkoutProgram(c: WorkoutProgramModel): WorkoutProgramModel {
-    let wp = {} as WorkoutProgramModel;
-    for(let prop in c) {
-        wp[prop] = c[prop];
-    }
-    return wp;
+    const wp = {} as WorkoutProgramModel;
+    return Object.assign(wp, c);
   }
 
     private navigateToId(id: string) {

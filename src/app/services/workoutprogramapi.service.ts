@@ -23,7 +23,14 @@ export class WorkoutProgramApiService {
     }
 
     public postExerciseToWorkoutProgram(id: string, exercise: ExerciseModel): Observable<any> {
-        return this.http.post(this.baseUrl + '/api/workoutprogram/' + id + '/exercise/', exercise);
+        return this.http.post(this.baseUrl + '/api/workoutprogram/' + id + '/exercise/', exercise).mergeMap((ex: any) => {
+            return this.editExerciseInWorkoutProgram(id, ex);
+        });
+    }
+
+    public editExerciseInWorkoutProgram(id: string, exercise: ExerciseModel): Observable<any> {
+        console.log(exercise);
+        return this.http.put(this.baseUrl + '/api/workoutprogram/' + id + '/exercise/' + exercise._id, exercise);
     }
 
     public deleteWorkoutProgram(id: string) {
@@ -34,8 +41,6 @@ export class WorkoutProgramApiService {
         const work = workoutprogrammodel as WorkoutProgramModelDto;
         return this.http.post(this.baseUrl + '/api/workoutprogram', workoutprogrammodel).mergeMap((link: any) => {
             let str = 'https://' + link.location;
-            console.log(str);
-            console.log(work);
             return this.http.put(str, work);
         });
     }
