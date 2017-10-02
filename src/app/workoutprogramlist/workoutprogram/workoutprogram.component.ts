@@ -5,6 +5,9 @@ import { WorkoutProgramModel } from '../../../models/workoutprogrammodel';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/share';
+import { ExerciseLog } from '../../../models/exerciselog';
 
 @Component({
   selector: 'app-workoutprogram',
@@ -21,16 +24,23 @@ export class WorkoutprogramComponent implements OnInit {
   public newExercise: boolean;
   public id: string;
   public items: MenuItem[];
+  public exerciseLog: Observable<ExerciseLog[]>;
 
   constructor(private workoutProgramService: WorkoutProgramApiService, private route: ActivatedRoute) { }
 
   ngOnInit() {
     this.route.params.subscribe(params => {
-      this.id = params['id']; // (+) converts string 'id' to a number      
+      this.id = params['id']; // (+) converts string 'id' to a number
       this.workoutProgramService.getWorkoutProgram(this.id).subscribe((obj) => {
         this.model = obj;
       });
-    });
+      this.exerciseLog = this.workoutProgramService.getExerciseLogs(this.id).map(exList => {
+        exList.forEach(ex => {
+          ex.TimeStamp = new Date(ex.TimeStamp);
+        });
+        return exList;
+      });
+   });
 
     this.items = [
       { label: 'Delete', icon: 'fa-close', command: (event) => this.delete() },
@@ -50,8 +60,15 @@ export class WorkoutprogramComponent implements OnInit {
     this.exerciseToAddOrEdit = Object.assign(this.exerciseToAddOrEdit, this.selectedExercise);
   }
 
-  public onRowSelect(event) {
-    // Goto exerciseLog page
+  public addExerciseLog() {
+    this.displayDialogAdd = false;
+    this.newExercise = false;
+    this.workoutProgramService.postExerciseLog(this.id).subscribe((obj) => {
+      this.exerciseLog = this.exerciseLog.map(result => {
+          result.push(obj);
+          return result;
+      });
+    });
   }
 
   public delete() {

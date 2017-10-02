@@ -1,3 +1,4 @@
+import { CommonModule, DatePipe } from '@angular/common';
 import { WorkoutProgramApiService } from './services/workoutprogramapi.service';
 import { HttpClient, HttpClientModule, HttpHandler } from '@angular/common/http';
 import { AppRouterModule } from '../AppRouterModule/AppRouterModule.module';
@@ -28,11 +29,13 @@ import { WorkoutProgramListComponent } from './workoutprogramlist/workoutprogram
     BrowserAnimationsModule,
     ButtonModule,
     HttpClientModule,
-    ContextMenuModule
+    ContextMenuModule,
+    CommonModule
   ],
   providers: [
     HttpClient,
-    WorkoutProgramApiService
+    WorkoutProgramApiService,
+    DatePipe
   ],
   bootstrap: [AppComponent]
 })
