@@ -9,7 +9,7 @@
 
 <p-dataTable [value]="exerciseLog | async" field="myTemp" [paginator]="true" rows="15" [responsive]="true">
     <p-column header="Exercise Log" field="TimeStamp" [sortable]="true"></p-column>
-    <p-footer><div class="ui-helper-clearfix" style="width:100%"><button type="button" pButton icon="fa-plus" style="float:left" (click)="showDialogToAddExerciseLog()" label="Add log"></button></div></p-footer>
+    <p-footer><div class="ui-helper-clearfix" style="width:100%"><button type="button" pButton icon="fa-plus" style="float:left" (click)="addExerciseLog()" label="Add log"></button></div></p-footer>
 </p-dataTable>
 
 <p-dialog header="Add Exercise" [(visible)]="displayDialogAdd" [responsive]="true" showEffect="fade" [modal]="true">

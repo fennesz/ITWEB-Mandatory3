@@ -22,6 +22,10 @@ export class WorkoutProgramApiService {
         return this.http.put<ExerciseModel>(this.baseUrl + '/api/workoutprogram/' + id + '/exercise/' + exercise._id, dto);
     }
 
+    public postExerciseLog(programId: string): Observable<any> {
+        return this.http.post(this.baseUrl + '/api/workoutprogram/' + programId + '/logs', {});
+    }
+
     public getExerciseLogs(programId: string): Observable<ExerciseLog[]> {
         return this.http.get<ExerciseLog[]>(this.baseUrl + '/api/workoutprogram/' + programId + '/logs');
     }

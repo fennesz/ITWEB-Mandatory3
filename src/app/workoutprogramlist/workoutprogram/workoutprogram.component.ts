@@ -32,8 +32,12 @@ export class WorkoutprogramComponent implements OnInit {
     this.route.params.subscribe(params => {
       this.id = params['id']; // (+) converts string 'id' to a number
       this.workoutProgramModel = this.workoutProgramService.getWorkoutProgram(this.id);
-      this.exerciseLog = this.workoutProgramService.getExerciseLogs(this.id);
-    //  this.workoutProgramModel.subscribe();
+      this.exerciseLog = this.workoutProgramService.getExerciseLogs(this.id).map(exList => {
+        exList.forEach(ex => {
+          ex.TimeStamp = new Date(ex.TimeStamp);
+        });
+        return exList;
+      });
    });
 
    this.items = [
@@ -54,8 +58,15 @@ export class WorkoutprogramComponent implements OnInit {
     this.exerciseToAddOrEdit = Object.assign(this.exerciseToAddOrEdit, this.selectedExercise);
   }
 
-  public onRowSelect(event) {
-    // Goto exerciseLog page
+  public addExerciseLog() {
+    this.displayDialogAdd = false;
+    this.newExercise = false;
+    this.workoutProgramService.postExerciseLog(this.id).subscribe((obj) => {
+      this.exerciseLog = this.exerciseLog.map(result => {
+          result.push(obj);
+          return result;
+      });
+    });
   }
 
   public delete() {
