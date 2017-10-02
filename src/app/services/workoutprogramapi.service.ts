@@ -57,12 +57,7 @@ export class WorkoutProgramApiService {
         return this.http.patch(this.baseUrl + '/api/workoutprogram/' + workoutprogrammodel._id, {Name: workoutprogrammodel.Name});
     }
 
-<<<<<<< HEAD
-      private putObjectAndId(id: string, work: WorkoutProgramModelDto): Observable<any> {
-          console.log(work);
-=======
     private putObjectAndId(id: string, work: WorkoutProgramModelDto): Observable<any> {
->>>>>>> 30e48b1c4e14d17bd77165db53f25a273bbac84c
         return this.http.put(this.baseUrl + '/api/workoutprogram/' + id, work);
     }
 

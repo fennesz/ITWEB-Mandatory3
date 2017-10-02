@@ -49,7 +49,16 @@ export class WorkoutProgramListComponent implements OnInit {
   }
 
   public delete() {
-      this.apiService.deleteWorkoutProgram(this.selectedWorkoutprogram._id).subscribe();
+      this.apiService.deleteWorkoutProgram(this.selectedWorkoutprogram._id).subscribe((obj => {
+        this.programList = this.programList.map(result => {
+            result.forEach(((ex, i) => {
+              if (ex._id === this.selectedWorkoutprogram._id) {
+                result.splice(i, 1);
+              }
+            }));
+            return result;
+        });
+      }));
   }
 
   public savePost() {
