@@ -64,7 +64,12 @@ export class WorkoutProgramListComponent implements OnInit {
   public savePost() {
     this.displayDialogAdd = false;
     this.programToAddOrEdit.ExerciseList = [];
-    this.apiService.postWorkoutProgram(this.programToAddOrEdit).subscribe();
+    this.apiService.postWorkoutProgram(this.programToAddOrEdit).subscribe((obj) => {
+      this.programList = this.programList.map(result => {
+          result.push(obj);
+          return result;
+      });
+    });
   }
 
   public saveEdit() {

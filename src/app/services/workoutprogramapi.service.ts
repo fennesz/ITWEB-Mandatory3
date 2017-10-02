@@ -38,7 +38,7 @@ export class WorkoutProgramApiService {
             const url = 'http://' + link.location;
             let dto = this.createExerciseDtoFromModel(exercise);
             return this.http.put<ExerciseModel>(url, dto);
-        });
+        }).share();
     }
 
     public deleteWorkoutProgram(id: string) {

@@ -6,6 +6,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/share';
 
 @Component({
   selector: 'app-workoutprogram',
@@ -55,13 +56,28 @@ export class WorkoutprogramComponent implements OnInit {
   }
 
   public delete() {
-    this.workoutProgramService.deleteExerciseInWorkoutProgram(this.id, this.selectedExercise).subscribe();
+    this.workoutProgramService.deleteExerciseInWorkoutProgram(this.id, this.selectedExercise).subscribe((obj) => {
+      this.workoutProgramModel = this.workoutProgramModel.map(result => {
+        result.ExerciseList.forEach(((ex, i) => {
+          if (ex._id === this.selectedExercise._id) {
+            result.ExerciseList.splice(i, 1);
+          }
+        }));
+        return result;
+    });
+    });
   }
 
   public saveAdd() {
-      this.workoutProgramService.postExerciseToWorkoutProgram(this.id, this.exerciseToAddOrEdit).subscribe();
+    console.log("saveAdd called");
       this.displayDialogAdd = false;
       this.newExercise = false;
+      this.workoutProgramService.postExerciseToWorkoutProgram(this.id, this.exerciseToAddOrEdit).subscribe((obj) => {
+        this.workoutProgramModel = this.workoutProgramModel.map(result => {
+            result.ExerciseList.push(obj);
+            return result;
+        });
+      });
   }
 
   public saveEdit() {
