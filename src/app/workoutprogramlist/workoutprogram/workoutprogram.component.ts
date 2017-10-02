@@ -7,6 +7,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/share';
+import { ExerciseLog } from '../../../models/exerciselog';
 
 @Component({
   selector: 'app-workoutprogram',
@@ -23,6 +24,7 @@ export class WorkoutprogramComponent implements OnInit {
   public newExercise: boolean;
   public id: string;
   public items: MenuItem[];
+  public exerciseLog: Observable<ExerciseLog[]>;
 
   constructor(private workoutProgramService: WorkoutProgramApiService, private route: ActivatedRoute) { }
 
@@ -30,7 +32,8 @@ export class WorkoutprogramComponent implements OnInit {
     this.route.params.subscribe(params => {
       this.id = params['id']; // (+) converts string 'id' to a number
       this.workoutProgramModel = this.workoutProgramService.getWorkoutProgram(this.id);
-      this.workoutProgramModel.subscribe();
+      this.exerciseLog = this.workoutProgramService.getExerciseLogs(this.id);
+    //  this.workoutProgramModel.subscribe();
    });
 
    this.items = [
@@ -65,7 +68,7 @@ export class WorkoutprogramComponent implements OnInit {
         }));
         return result;
     });
-    });
+    }).unsubscribe();
   }
 
   public saveAdd() {

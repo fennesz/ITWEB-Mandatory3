@@ -1,3 +1,4 @@
+import { ExerciseLog } from '../../models/exerciselog';
 import { ExerciseModel } from '../../models/exercisemodel';
 import { ExerciseModelDto } from '../../models/dtos/exercisemodelDto';
 import { WorkoutProgramModel } from '../../models/workoutprogrammodel';
@@ -21,6 +22,10 @@ export class WorkoutProgramApiService {
         return this.http.put<ExerciseModel>(this.baseUrl + '/api/workoutprogram/' + id + '/exercise/' + exercise._id, dto);
     }
 
+    public getExerciseLogs(programId: string): Observable<ExerciseLog[]> {
+        return this.http.get<ExerciseLog[]>(this.baseUrl + '/api/workoutprogram/' + programId + '/logs');
+    }
+
     public getWorkoutProgramList(): Observable<WorkoutProgramModel[]> {
         return this.http.get<WorkoutProgramModel[]>(this.baseUrl + '/api/workoutprogram');
     }
@@ -38,7 +43,7 @@ export class WorkoutProgramApiService {
             const url = 'http://' + link.location;
             let dto = this.createExerciseDtoFromModel(exercise);
             return this.http.put<ExerciseModel>(url, dto);
-        }).share();
+        });
     }
 
     public deleteWorkoutProgram(id: string) {
