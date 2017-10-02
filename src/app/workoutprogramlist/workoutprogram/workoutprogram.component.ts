@@ -57,7 +57,7 @@ export class WorkoutprogramComponent implements OnInit {
 
   public delete() {
     this.workoutProgramService.deleteExerciseInWorkoutProgram(this.id, this.selectedExercise).subscribe((obj) => {
-      this.workoutProgramModel = this.workoutProgramModel.map(result => {
+      this.workoutProgramModel = this.workoutProgramModel.map(result => { // THIS SHIT IS CALLED TWICE.. WHY?
         result.ExerciseList.forEach(((ex, i) => {
           if (ex._id === this.selectedExercise._id) {
             result.ExerciseList.splice(i, 1);
@@ -73,7 +73,7 @@ export class WorkoutprogramComponent implements OnInit {
       this.displayDialogAdd = false;
       this.newExercise = false;
       this.workoutProgramService.postExerciseToWorkoutProgram(this.id, this.exerciseToAddOrEdit).subscribe((obj) => {
-        this.workoutProgramModel = this.workoutProgramModel.map(result => {
+        this.workoutProgramModel = this.workoutProgramModel.map(result => { // THIS SHIT IS CALLED TWICE.. WHY?
             result.ExerciseList.push(obj);
             return result;
         });
