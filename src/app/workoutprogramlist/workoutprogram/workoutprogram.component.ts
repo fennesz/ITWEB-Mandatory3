@@ -5,8 +5,6 @@ import { WorkoutProgramModel } from '../../../models/workoutprogrammodel';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/share';
 
 @Component({
   selector: 'app-workoutprogram',
@@ -15,7 +13,7 @@ import 'rxjs/add/operator/share';
 })
 
 export class WorkoutprogramComponent implements OnInit {
-  public workoutProgramModel: Observable<WorkoutProgramModel>;
+  public model: WorkoutProgramModel
   public selectedExercise: ExerciseModel;
   public exerciseToAddOrEdit: ExerciseModel;
   public displayDialogEdit: boolean;
@@ -28,14 +26,15 @@ export class WorkoutprogramComponent implements OnInit {
 
   ngOnInit() {
     this.route.params.subscribe(params => {
-      this.id = params['id']; // (+) converts string 'id' to a number
-      this.workoutProgramModel = this.workoutProgramService.getWorkoutProgram(this.id);
-      this.workoutProgramModel.subscribe();
-   });
+      this.id = params['id']; // (+) converts string 'id' to a number      
+      this.workoutProgramService.getWorkoutProgram(this.id).subscribe((obj) => {
+        this.model = obj;
+      });
+    });
 
-   this.items = [
-    {label: 'Delete', icon: 'fa-close', command: (event) => this.delete()},
-    {label: 'Edit', icon: 'fa-close', command: (event) => this.showDialogToEdit()},
+    this.items = [
+      { label: 'Delete', icon: 'fa-close', command: (event) => this.delete() },
+      { label: 'Edit', icon: 'fa-close', command: (event) => this.showDialogToEdit() },
     ];
   }
 
@@ -57,40 +56,37 @@ export class WorkoutprogramComponent implements OnInit {
 
   public delete() {
     this.workoutProgramService.deleteExerciseInWorkoutProgram(this.id, this.selectedExercise).subscribe((obj) => {
-      this.workoutProgramModel = this.workoutProgramModel.map(result => { // THIS SHIT IS CALLED TWICE.. WHY?
-        result.ExerciseList.forEach(((ex, i) => {
-          if (ex._id === this.selectedExercise._id) {
-            result.ExerciseList.splice(i, 1);
-          }
-        }));
-        return result;
-    });
+      this.model.ExerciseList.forEach((ex, i) => {
+        if (ex._id === this.selectedExercise._id) {
+          this.model.ExerciseList.splice(i, 1);
+        }
+      });
+      this.model.ExerciseList = this.model.ExerciseList.slice();
     });
   }
 
   public saveAdd() {
     console.log("saveAdd called");
-      this.displayDialogAdd = false;
-      this.newExercise = false;
-      this.workoutProgramService.postExerciseToWorkoutProgram(this.id, this.exerciseToAddOrEdit).subscribe((obj) => {
-        this.workoutProgramModel = this.workoutProgramModel.map(result => { // THIS SHIT IS CALLED TWICE.. WHY?
-            result.ExerciseList.push(obj);
-            return result;
-        });
-      });
+    this.displayDialogAdd = false;
+    this.newExercise = false;
+    this.workoutProgramService.postExerciseToWorkoutProgram(this.id, this.exerciseToAddOrEdit).subscribe((obj) => {
+      this.model.ExerciseList.push(obj);
+      this.model.ExerciseList = this.model.ExerciseList.slice();
+    });
   }
 
   public saveEdit() {
     this.workoutProgramService.editExerciseInWorkoutProgram(this.id, this.exerciseToAddOrEdit).subscribe((obj) => {
-        this.displayDialogEdit = false;
-        this.workoutProgramModel = this.workoutProgramModel.map(result => {
-            result.ExerciseList.forEach((ex => {
-              if (ex._id === this.exerciseToAddOrEdit._id) {
-                ex = Object.assign(ex, this.exerciseToAddOrEdit);
-              }
-            }));
-            return result;
-        });
+      this.displayDialogEdit = false;
+      this.model.ExerciseList.forEach(ex => {
+        if (ex._id === this.exerciseToAddOrEdit._id) {
+          ex = Object.assign(ex, this.exerciseToAddOrEdit);
+        }
+      });
+      this.model.ExerciseList = this.model.ExerciseList.slice();
     });
   }
 }
+
+
+

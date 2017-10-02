@@ -1,5 +1,5 @@
-<p-dataTable [contextMenu]="cm" [value]="(workoutProgramModel | async)?.ExerciseList" selectionMode="single" [(selection)]="selectedExercise" (onRowSelect)="onRowSelect($event)" [paginator]="true" rows="15" [responsive]="true">
-    <p-header>{{(workoutProgramModel | async)?.Name}}</p-header>
+<p-dataTable [contextMenu]="cm" [value]="model?.ExerciseList" selectionMode="single" [(selection)]="selectedExercise" (onRowSelect)="onRowSelect($event)" [paginator]="true" rows="15" [responsive]="true">
+    <p-header>{{model?.Name}}</p-header>
     <p-column field="ExerciseName" header="Exercise Name" [sortable]="true"></p-column>
     <p-column field="Description" header="Description" [sortable]="true"></p-column>
     <p-column field="RepsOrTime" header="Reps/Time" [sortable]="true"></p-column>
