@@ -29,17 +29,18 @@ export class WorkoutProgramListComponent implements OnInit {
     this.items = [
       {label: 'Delete', icon: 'fa-close', command: (event) => this.delete()},
       {label: 'Edit', icon: 'fa-close', command: (event) => this.editWorkoutProgram()},
-  ];
+    ];
   }
 
   public showDialogToAdd() {
     this.newProgram = true;
-    this.programToAddOrEdit = this.cloneWorkoutProgram(this.selectedWorkoutprogram);
+    this.programToAddOrEdit = Object.assign(this.programToAddOrEdit, this.selectedWorkoutprogram);
     this.displayDialogAdd = true;
   }
 
   private editWorkoutProgram() {
-    this.programToAddOrEdit = this.cloneWorkoutProgram(this.selectedWorkoutprogram);
+    this.programToAddOrEdit = {} as WorkoutProgramModel;
+    this.programToAddOrEdit = Object.assign(this.programToAddOrEdit, this.selectedWorkoutprogram);
     this.displayDialogEdit = true;
   }
 
@@ -57,14 +58,19 @@ export class WorkoutProgramListComponent implements OnInit {
     this.apiService.postWorkoutProgram(this.programToAddOrEdit).subscribe();
   }
 
-  public saveEdit() { //
-    this.displayDialogEdit = false;
-    this.apiService.editWorkoutProgram(this.programToAddOrEdit).subscribe();
-  }
-
-  private cloneWorkoutProgram(c: WorkoutProgramModel): WorkoutProgramModel {
-    const wp = {} as WorkoutProgramModel;
-    return Object.assign(wp, c);
+  public saveEdit() {
+    console.log(this.programToAddOrEdit);
+    this.apiService.editWorkoutProgram(this.programToAddOrEdit).subscribe((obj) => {
+      this.displayDialogEdit = false;
+      this.programList = this.programList.map(result => {
+          result.forEach((ex => {
+            if (ex._id === this.programToAddOrEdit._id) {
+              ex = Object.assign(ex, this.programToAddOrEdit);
+            }
+          }));
+          return result;
+      });
+  });
   }
 
     private navigateToId(id: string) {
