@@ -1,6 +1,6 @@
 import { ExerciseLog } from '../../models/exerciselog';
 import { ExerciseModel } from '../../models/exercisemodel';
-import { ExerciseModelDto } from '../../models/dtos/exercisemodelDto';
+import { ExerciseModelDto } from '../../models/dtos/exercisemodeldto';
 import { WorkoutProgramModel } from '../../models/workoutprogrammodel';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
