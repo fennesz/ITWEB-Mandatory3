@@ -13,7 +13,7 @@ import { WorkoutProgramModelDto } from '../../models/dtos/workoutprogrammodeldto
 
 @Injectable()
 export class WorkoutProgramApiService {
-    baseUrl: String = 'http://itweb-mandatory2.herokuapp.com';
+    baseUrl: String = 'https://itweb-mandatory2.herokuapp.com';
 
     constructor(private http: HttpClient) { }
 
