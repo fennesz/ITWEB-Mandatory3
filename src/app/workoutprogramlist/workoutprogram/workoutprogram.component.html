@@ -1,4 +1,4 @@
-<p-dataTable [contextMenu]="cm" [value]="model?.ExerciseList" selectionMode="single" [(selection)]="selectedExercise" (onRowSelect)="onRowSelect($event)" [paginator]="true" rows="15" [responsive]="true">
+<p-dataTable [contextMenu]="cm" [value]="model?.ExerciseList" selectionMode="single" [(selection)]="selectedExercise" [paginator]="true" rows="15" [responsive]="true">
     <p-header>{{model?.Name}}</p-header>
     <p-column field="ExerciseName" header="Exercise Name" [sortable]="true"></p-column>
     <p-column field="Description" header="Description" [sortable]="true"></p-column>
